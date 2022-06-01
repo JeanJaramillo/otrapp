@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "427250110997",
+    "project_id": "mosqueteros-digitales",
+    "storage_bucket": "mosqueteros-digitales.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427250110997:android:a1fb46c7e5066e1730b41c",
+        "android_client_info": {
+          "package_name": "com.mosqueteros.otrapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427250110997-viq0f2ibfk5g82kvu27qeq7jf72vvchi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA6G6-Unte5NPYOHnCmxrJLV4Ayi1Cw0Mg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427250110997-viq0f2ibfk5g82kvu27qeq7jf72vvchi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
