@@ -12,90 +12,252 @@ void main() {
       projectId: "mosqueteros-digitales",
     ),
   ).then((value) {
-    runApp(const MyApp());
+    runApp(const OrtApp());
   });
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class OrtApp extends StatelessWidget {
+  const OrtApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      title: 'OTR APP',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyOrtApp(title: 'Registar Tu Cuenta'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({Key? key, required this.title}) : super(key: key);
+class MyOrtApp extends StatefulWidget {
+  const MyOrtApp({Key? key, required this.title}) : super(key: key);
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<MyOrtApp> createState() => _MyOrtAppState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  List usuarios = [];
+class _MyOrtAppState extends State<MyOrtApp> {
+  String nombreUsuario = "",
+      apellidoPaternoUsuario = "",
+      apellidoMaternoUsuario = "",
+      correoUsuario = "",
+      passwordUsuario = "";
+
+  int dniIDUsuario = 0;
+
+  getNombre(nombre) {
+    nombreUsuario = nombre;
+  }
+
+  getApellidoPaterno(paterno) {
+    apellidoPaternoUsuario = paterno;
+  }
+
+  getApellidoMaterno(materno) {
+    apellidoMaternoUsuario = materno;
+  }
+
+  getDniID(dni) {
+    dniIDUsuario = int.parse(dni);
+  }
+
+  getCorreo(correo) {
+    correoUsuario = correo;
+  }
+
+  getPassword(password) {
+    passwordUsuario = password;
+  }
+
+  crearCuenta() {
+    // ignore: avoid_print
+    print("Cuenta Creada");
+
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection("usuarios").doc(nombreUsuario);
+
+    Map<String, dynamic> usuarioModelo = {
+      "nombreUsuario": nombreUsuario,
+      "apellidoPaternoUsuario": apellidoPaternoUsuario,
+      "apellidoMaternoUsuario": apellidoMaternoUsuario,
+      "dniIDUsuario": dniIDUsuario,
+      "correoUsuario": correoUsuario,
+      "passwordUsuario": passwordUsuario,
+    };
+
+    documentReference.set(usuarioModelo).whenComplete(() {
+      // ignore: avoid_print
+      print("$nombreUsuario creado");
+    });
+  }
+
+  mostrarDatos() {
+    // ignore: avoid_print
+    print("Datos Mostrados");
+  }
+
+  actualizarDatos() {
+    // ignore: avoid_print
+    print("Datos Actualizados");
+  }
+
+  eliminarCuenta() {
+    // ignore: avoid_print
+    print("Cuenta Eliminada");
+  }
 
   @override
   void initState() {
     super.initState();
-    getUsers();
-  }
-
-  void getUsers() async {
-    CollectionReference collectionReference =
-        FirebaseFirestore.instance.collection("usuarios");
-
-    QuerySnapshot usuarios = await collectionReference.get();
-
-    if (usuarios.docs.isNotEmpty) {
-      for (var doc in usuarios.docs) {
-        // ignore: avoid_print
-        print(doc.data());
-      }
-    }
-  }
-
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
-          ],
+        appBar: AppBar(
+          title: Text(widget.title),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+        body: Column(
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                    labelText: "Nombre",
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blue, width: 2.0))),
+                onChanged: (String nombre) {
+                  getNombre(nombre);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                    labelText: "Apellido Paterno",
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blue, width: 2.0))),
+                onChanged: (String paterno) {
+                  getApellidoPaterno(paterno);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                    labelText: "Apellido Materno",
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blue, width: 2.0))),
+                onChanged: (String materno) {
+                  getApellidoMaterno(materno);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                    labelText: "Documento de Identidad",
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blue, width: 2.0))),
+                onChanged: (String dni) {
+                  getDniID(dni);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                    labelText: "Correo",
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blue, width: 2.0))),
+                onChanged: (String correo) {
+                  getCorreo(correo);
+                },
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                decoration: const InputDecoration(
+                    labelText: "Contraseña",
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide:
+                            BorderSide(color: Colors.blue, width: 2.0))),
+                onChanged: (String password) {
+                  getPassword(password);
+                },
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                // ignore: deprecated_member_use
+                RaisedButton(
+                  color: Colors.green,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    crearCuenta();
+                  },
+                  child: const Text("Crear Cuenta"),
+                ),
+                // ignore: deprecated_member_use
+                RaisedButton(
+                  color: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    mostrarDatos();
+                  },
+                  child: const Text("Mostrar Datos"),
+                ),
+                // ignore: deprecated_member_use
+                RaisedButton(
+                  color: Colors.indigoAccent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    actualizarDatos();
+                  },
+                  child: const Text("Actualizar"),
+                ),
+                // ignore: deprecated_member_use
+                RaisedButton(
+                  color: Colors.redAccent,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8.0)),
+                  child: const Text("Eliminar Cuenta"),
+                  textColor: Colors.white,
+                  onPressed: () {
+                    eliminarCuenta();
+                  },
+                )
+              ],
+            )
+          ],
+        ));
   }
 }
