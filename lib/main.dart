@@ -191,7 +191,7 @@ class _MyOrtAppState extends State<MyOrtApp> {
         appBar: AppBar(
           title: Text(widget.title),
         ),
-        body: Column(
+        body: ListView(
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.all(10.0),
@@ -325,7 +325,81 @@ class _MyOrtAppState extends State<MyOrtApp> {
                   },
                 )
               ],
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: Row(
+                textDirection: TextDirection.ltr,
+                children: const [
+                  Expanded(
+                      child: Text(
+                    "ID",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  Expanded(
+                      child: Text(
+                    "Nombre(s)",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  Expanded(
+                      child: Text(
+                    "Apellido Paterno",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  Expanded(
+                      child: Text(
+                    "Apellido Materno",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                  Expanded(
+                      child: Text(
+                    "Correo",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )),
+                ],
+              ),
+            ),
+            StreamBuilder<QuerySnapshot>(
+                stream: FirebaseFirestore.instance
+                    .collection('usuarios')
+                    .snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                  if (snapshot.hasData) {
+                    return ListView.builder(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          DocumentSnapshot documentSnapshot =
+                              snapshot.data!.docs[index];
+                          return Row(
+                            textDirection: TextDirection.ltr,
+                            children: [
+                              Expanded(
+                                  child:
+                                      Text(documentSnapshot["dniIDUsuario"])),
+                              Expanded(
+                                  child:
+                                      Text(documentSnapshot["nombreUsuario"])),
+                              Expanded(
+                                  child: Text(documentSnapshot[
+                                      "apellidoPaternoUsuario"])),
+                              Expanded(
+                                  child: Text(documentSnapshot[
+                                      "apellidoMaternoUsuario"])),
+                              Expanded(
+                                  child:
+                                      Text(documentSnapshot["correoUsuario"])),
+                            ],
+                          );
+                        },
+                        itemCount: snapshot.data!.docs.length);
+                  } else {
+                    return const Align(
+                      alignment: FractionalOffset.bottomCenter,
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                })
           ],
         ));
   }
