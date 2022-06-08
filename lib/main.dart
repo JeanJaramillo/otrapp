@@ -46,9 +46,8 @@ class _MyOrtAppState extends State<MyOrtApp> {
       apellidoPaternoUsuario = "",
       apellidoMaternoUsuario = "",
       correoUsuario = "",
-      passwordUsuario = "";
-
-  int dniIDUsuario = 0;
+      passwordUsuario = "",
+      dniIDUsuario = "";
 
   getNombre(nombre) {
     nombreUsuario = nombre;
@@ -63,7 +62,7 @@ class _MyOrtAppState extends State<MyOrtApp> {
   }
 
   getDniID(dni) {
-    dniIDUsuario = int.parse(dni);
+    dniIDUsuario = dni;
   }
 
   getCorreo(correo) {
@@ -79,36 +78,106 @@ class _MyOrtAppState extends State<MyOrtApp> {
     print("Cuenta Creada");
 
     DocumentReference documentReference =
-        FirebaseFirestore.instance.collection("usuarios").doc(nombreUsuario);
+        FirebaseFirestore.instance.collection("usuarios").doc(dniIDUsuario);
 
-    Map<String, dynamic> usuarioModelo = {
-      "nombreUsuario": nombreUsuario,
-      "apellidoPaternoUsuario": apellidoPaternoUsuario,
-      "apellidoMaternoUsuario": apellidoMaternoUsuario,
-      "dniIDUsuario": dniIDUsuario,
-      "correoUsuario": correoUsuario,
-      "passwordUsuario": passwordUsuario,
-    };
-
-    documentReference.set(usuarioModelo).whenComplete(() {
-      // ignore: avoid_print
-      print("El usuario $nombreUsuario ha sido creado");
-    });
+    documentReference
+        .set(
+          {
+            "nombreUsuario": nombreUsuario,
+            "apellidoPaternoUsuario": apellidoPaternoUsuario,
+            "apellidoMaternoUsuario": apellidoMaternoUsuario,
+            "dniIDUsuario": dniIDUsuario,
+            "correoUsuario": correoUsuario,
+            "passwordUsuario": passwordUsuario,
+          },
+          SetOptions(merge: true),
+        )
+        // ignore: avoid_print
+        .catchError((error) => print(
+            'Ocurrió un fallo al realizar la unión de información: $error'))
+        .whenComplete(() {
+          // ignore: avoid_print
+          print('La cuenta del usuario $nombreUsuario a sido creada');
+        });
   }
 
   mostrarDatos() {
     // ignore: avoid_print
-    print("Datos Mostrados");
+    print("Datos Mostrados Del Usuario: $dniIDUsuario");
+
+    FirebaseFirestore.instance
+        .collection("usuarios")
+        .doc(dniIDUsuario)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        // ignore: avoid_print
+        print('Información de documento: ${documentSnapshot.data()}');
+        Map<String, dynamic> data =
+            documentSnapshot.data() as Map<String, dynamic>;
+
+        AlertDialog alerta = AlertDialog(
+          title: const Text('Datos del Usuario'),
+          content: Column(
+            children: [
+              Text('Nombre(s): ${data["nombreUsuario"]}'),
+              Text(
+                  'Apellidos: ${data["apellidoPaternoUsuario"]} ${data["apellidoMaternoUsuario"]}'),
+              Text('ID (DNI): ${data["dniIDUsuario"]}'),
+              Text('Correo: ${data["correoUsuario"]}')
+            ],
+          ),
+        );
+        showDialog(context: context, builder: (BuildContext context) => alerta);
+      } else {
+        AlertDialog alerta2 = const AlertDialog(
+          title: Text('Datos del Usuario'),
+          content: Text('NO EXISTEN DATOS'),
+        );
+        showDialog(
+            context: context, builder: (BuildContext context) => alerta2);
+        // ignore: avoid_print
+        print('El documento no existe en la Base de Datos...');
+      }
+    });
   }
 
   actualizarDatos() {
     // ignore: avoid_print
     print("Datos Actualizados");
+
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection("usuarios").doc(dniIDUsuario);
+
+    documentReference
+        .update({
+          "nombreUsuario": nombreUsuario,
+          "apellidoPaternoUsuario": apellidoPaternoUsuario,
+          "apellidoMaternoUsuario": apellidoMaternoUsuario,
+          "dniIDUsuario": dniIDUsuario,
+          "correoUsuario": correoUsuario,
+          "passwordUsuario": passwordUsuario,
+        })
+        .then((value) =>
+            // ignore: avoid_print
+            print('Los datos del usuario $nombreUsuario han sido actualizados'))
+        // ignore: avoid_print
+        .catchError((error) => print('Error al actualizar los datos: $error'));
   }
 
   eliminarCuenta() {
     // ignore: avoid_print
-    print("Cuenta Eliminada");
+    print("La cuenta del usuario $nombreUsuario a sido eliminada");
+
+    DocumentReference documentReference =
+        FirebaseFirestore.instance.collection('usuarios').doc(dniIDUsuario);
+
+    documentReference
+        .delete()
+        // ignore: avoid_print
+        .then((value) => print('Datos del usuario $nombreUsuario eliminados'))
+        // ignore: avoid_print
+        .catchError((error) => print('Error al eliminar los datos: $error'));
   }
 
   @override
