@@ -92,7 +92,7 @@ class _MyOrtAppState extends State<MyOrtApp> {
 
     documentReference.set(usuarioModelo).whenComplete(() {
       // ignore: avoid_print
-      print("$nombreUsuario creado");
+      print("El usuario $nombreUsuario creado");
     });
   }
 
